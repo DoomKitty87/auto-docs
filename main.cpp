@@ -60,7 +60,6 @@ void document_file(string file_name) {
         }
         functiondata.push_back(param);
       }
-      cout << functiondata.size() << endl;
       functions.push_back(functiondata);
     }
     else if (commentlines[i][2] == 'N')  {
@@ -86,7 +85,7 @@ void document_file(string file_name) {
       file_write << functions[i][0] << endl;
       file_write << functions[i][2] << endl;
       for (int j = 0; j < stoi(functions[i][1]); j++) {
-        for (int k = 0; k < functions[i][3 + j].length(); j++) {
+        for (int k = 0; k < functions[i][3 + j].length(); k++) {
           if (functions[i][3 + j][k] == ':') {
             file_write << functions[i][3 + j].substr(0, k) << endl;
             file_write << functions[i][3 + j].substr(k + 1) << endl;
