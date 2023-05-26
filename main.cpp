@@ -13,6 +13,13 @@ void document_file(string file_name) {
   vector<string> commentlines = vector<string>();
   string line;
   while (getline(file_read, line)) {
+    for (int i = 0; i < line.length(); i++) {
+      if (!(line[i] == ' ' || line[i] == '\t')) break;
+      else { 
+        line.erase(line.begin() + i);
+        i--;
+      }
+    }
     if (line[0] == '/' && line[1] == '/') {
       commentlines.push_back(line);
     }
@@ -24,12 +31,12 @@ void document_file(string file_name) {
   for (int i = 0; i < commentlines.size(); i++) {
     if (commentlines[i][2] == 'F') {
       vector<string> functiondata = vector<string>();
-      for (int j = 0; j < commentlines[i].length(); j++) {
-        if (line[j] == ':') {
-          functiondata.push_back(commentlines[i].substr(3, j));
-          for (int k = j + 1; k < line.length(); k++) {
+      for (int j = 3; j < commentlines[i].length() - 1; j++) {
+        if (commentlines[i][j] == ':') {
+          functiondata.push_back(commentlines[i].substr(3, j - 3));
+          for (int k = j + 1; k < commentlines[i].length() - 1; k++) {
             if (commentlines[i][k] == ':') {
-              functiondata.push_back(commentlines[i].substr(j + 1, k));
+              functiondata.push_back(commentlines[i].substr(j + 1, k - (j + 1)));
               functiondata.push_back(commentlines[i].substr(k + 1));
               break;
             }
@@ -37,29 +44,27 @@ void document_file(string file_name) {
           break;
         }
       }
-      
-      for (int j = 0; j < stoi(functiondata[1]); j++) {
+
+      for (int j = 1; j <= stoi(functiondata[1]); j++) {
         string param;
-        int colons = 0;
         for (int k = 2; k < commentlines[i + j].length(); k++) {
           if (commentlines[i + j][k] == ':') {
-            colons++;
-            if (colons > j * 2) {
-              for (int l = k + 1; k < commentlines[i + j].length(); k++) {
-                if (commentlines[i + j][l] == ':' || k == commentlines[i + j].length() - 1) {
-                  param = commentlines[i + j].substr(k + 1, l);
-                  break;
-                }
-              }
-              break;
+            for (int l = k + 1; l < commentlines[i + j].length(); l++) {
+              if (commentlines[i + j][l] == ':' || l == commentlines[i + j].length() - 1) {
+                param = commentlines[i + j].substr(3, l - 3) + ": " + commentlines[i + j].substr(l + 1);
+                break;
+              } 
             }
+            break;
           }
         }
         functiondata.push_back(param);
       }
+      cout << functiondata.size() << endl;
+      functions.push_back(functiondata);
     }
-    else if (line[2] == 'N')  {
-      footnotes.push_back(line.substr(3));
+    else if (commentlines[i][2] == 'N')  {
+      footnotes.push_back(commentlines[i].substr(3));
     }
   }
   file_read.close();
@@ -89,23 +94,22 @@ void document_file(string file_name) {
           }
         }
       }
+      file_write << endl;
     }
   }
 
   if (footnotes.size() > 0) {
     file_write << "#Footnotes" << endl;
     for (int i = 0; i < footnotes.size(); i++) {
-      file_write << footnotes[i] << endl;
+      file_write << footnotes[i] << endl << endl;
     }
   }
   file_write.close();
   //NAdds data to output file.
 }
 
-//Fmain:0:Runs main program loop
+//Fmain:0:Runs main program loop.
 int main() {
-  system("Color 03");
-
   cout << "Auto-Docs: Easy documentation for your programs." << endl;
   cout << "------------------------------------------------" << endl;
 
