@@ -1,6 +1,8 @@
 # auto-docs
 Automatic documentation for any code, following simple formatting guidelines. To get documentation for your code, just run main.cpp in the directory it is in and provide the file name.
 
+Compile and run to use.
+
 Formatting:
 All lines to be read must start with comments.
 
